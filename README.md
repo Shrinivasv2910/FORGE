@@ -1,4 +1,4 @@
-# DE10-Nano Drone GCS Motion Controller
+#FORGE — FPGA-Orchestrated Robot Ground-station Engine
 
 > **FPGA-based Ground Control Station motion controller** — drives 4 stepper motors across 2 synchronized axes (TB6600) and 3 smart servos across 3 axes (Waveshare ST3215) from a single Terasic DE10-Nano board.  
 > Developed as part of the **ASCEND / IRoC-U 2026** autonomous drone project, NIT Patna Robotics Lab.
