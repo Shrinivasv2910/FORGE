@@ -1,0 +1,135 @@
+# =============================================================================
+# FILE    : de10_nano_pins.qsf
+# PROJECT : FPGA Drone GCS Motion Controller
+# TARGET  : Terasic DE10-Nano — Intel Cyclone V SoC (5CSEBA6U23I7)
+#
+# USAGE
+#   In Quartus Prime: Assignments → Import Assignments → select this file
+#   OR paste into your project's .qsf file.
+#
+# GPIO HEADER PINOUT (DE10-Nano)
+#   GPIO_0 connector : GPIO_0[0]..GPIO_0[35]  (40-pin header, 2 power pins)
+#   GPIO_1 connector : GPIO_1[0]..GPIO_1[35]
+#
+# STEPPER SECTION → GPIO_0
+# SERVO   SECTION → GPIO_1
+#
+# IMPORTANT: Verify actual physical wiring against your board revision.
+#   The assignments below follow the DE10-Nano User Manual (Rev. C, 2017).
+#   JP7/JP8 jumpers must be set to 3.3 V logic for GPIO headers.
+# =============================================================================
+
+# ─── Global settings ─────────────────────────────────────────────────────────
+set_global_assignment -name FAMILY "Cyclone V"
+set_global_assignment -name DEVICE 5CSEBA6U23I7
+set_global_assignment -name TOP_LEVEL_ENTITY top_gcs
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+
+# ─── Source files ─────────────────────────────────────────────────────────────
+set_global_assignment -name VERILOG_FILE rtl/uart_common.v
+set_global_assignment -name VERILOG_FILE rtl/stepper_axes.v
+set_global_assignment -name VERILOG_FILE rtl/servo_axes.v
+set_global_assignment -name VERILOG_FILE rtl/top_gcs.v
+
+# ─── Clock (50 MHz oscillator) ────────────────────────────────────────────────
+set_location_assignment PIN_V11 -to clk_50mhz_in
+
+# =============================================================================
+# STEPPER SUBSYSTEM  — GPIO_0 header
+# =============================================================================
+
+# ─── ADC SPI ──────────────────────────────────────────────────────────────────
+set_location_assignment PIN_W12  -to adc_convst_out   # GPIO_0[0]
+set_location_assignment PIN_Y8   -to adc_sck_out      # GPIO_0[2]
+set_location_assignment PIN_W11  -to adc_sdi_out      # GPIO_0[4]
+set_location_assignment PIN_Y7   -to adc_sdo_in       # GPIO_0[6]
+
+# ─── Speed buttons (active-low) ───────────────────────────────────────────────
+set_location_assignment PIN_AA15 -to btn_ax1_speed_in  # GPIO_0[8]
+set_location_assignment PIN_AB15 -to btn_ax2_speed_in  # GPIO_0[10]
+
+# ─── Axis 1: M1 (primary) ─────────────────────────────────────────────────────
+set_location_assignment PIN_AA14 -to m1_dir_out        # GPIO_0[12]
+set_location_assignment PIN_AB14 -to m1_pul_out        # GPIO_0[14]
+
+# ─── Axis 1: M2 (synchronized) ────────────────────────────────────────────────
+set_location_assignment PIN_AA13 -to m2_dir_out        # GPIO_0[16]
+set_location_assignment PIN_AB13 -to m2_pul_out        # GPIO_0[18]
+
+# ─── Axis 2: M3 (primary) ─────────────────────────────────────────────────────
+set_location_assignment PIN_AA12 -to m3_dir_out        # GPIO_0[20]
+set_location_assignment PIN_AB12 -to m3_pul_out        # GPIO_0[22]
+
+# ─── Axis 2: M4 (synchronized) ────────────────────────────────────────────────
+set_location_assignment PIN_AA11 -to m4_dir_out        # GPIO_0[24]
+set_location_assignment PIN_AB11 -to m4_pul_out        # GPIO_0[26]
+
+# =============================================================================
+# SERVO SUBSYSTEM  — GPIO_1 header
+# =============================================================================
+
+# ─── Servo A buttons (Roll, ID 0x01) ──────────────────────────────────────────
+set_location_assignment PIN_Y15  -to btn_sa_step_in    # GPIO_1[0]
+set_location_assignment PIN_AA24 -to btn_sa_fwd_in     # GPIO_1[2]
+set_location_assignment PIN_AB24 -to btn_sa_bwd_in     # GPIO_1[4]
+
+# ─── Servo A UART ─────────────────────────────────────────────────────────────
+set_location_assignment PIN_Y16  -to uart_tx_sa_out    # GPIO_1[1]
+set_location_assignment PIN_AA23 -to uart_rx_sa_in     # GPIO_1[3]
+
+# ─── Servo B buttons (Pitch, ID 0x02) ─────────────────────────────────────────
+set_location_assignment PIN_AB23 -to btn_sb_step_in    # GPIO_1[6]
+set_location_assignment PIN_AA22 -to btn_sb_fwd_in     # GPIO_1[8]
+set_location_assignment PIN_AB22 -to btn_sb_bwd_in     # GPIO_1[10]
+
+# ─── Servo B UART ─────────────────────────────────────────────────────────────
+set_location_assignment PIN_AA21 -to uart_tx_sb_out    # GPIO_1[7]
+set_location_assignment PIN_AB21 -to uart_rx_sb_in     # GPIO_1[9]
+
+# ─── Servo C buttons (Yaw, ID 0x03) ───────────────────────────────────────────
+set_location_assignment PIN_AA20 -to btn_sc_step_in    # GPIO_1[12]
+set_location_assignment PIN_AB20 -to btn_sc_fwd_in     # GPIO_1[14]
+set_location_assignment PIN_AA19 -to btn_sc_bwd_in     # GPIO_1[16]
+
+# ─── Servo C UART ─────────────────────────────────────────────────────────────
+set_location_assignment PIN_AB19 -to uart_tx_sc_out    # GPIO_1[13]
+set_location_assignment PIN_AA18 -to uart_rx_sc_in     # GPIO_1[15]
+
+# =============================================================================
+# I/O STANDARDS
+# =============================================================================
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to clk_50mhz_in
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to adc_convst_out
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to adc_sck_out
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to adc_sdi_out
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to adc_sdo_in
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to btn_ax1_speed_in
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to btn_ax2_speed_in
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to m1_dir_out
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to m1_pul_out
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to m2_dir_out
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to m2_pul_out
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to m3_dir_out
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to m3_pul_out
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to m4_dir_out
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to m4_pul_out
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to btn_sa_step_in
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to btn_sa_fwd_in
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to btn_sa_bwd_in
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart_tx_sa_out
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart_rx_sa_in
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to btn_sb_step_in
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to btn_sb_fwd_in
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to btn_sb_bwd_in
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart_tx_sb_out
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart_rx_sb_in
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to btn_sc_step_in
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to btn_sc_fwd_in
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to btn_sc_bwd_in
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart_tx_sc_out
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to uart_rx_sc_in
+
+# ─── Timing constraint ────────────────────────────────────────────────────────
+set_global_assignment -name SDC_FILE constraints/de10_nano_timing.sdc
