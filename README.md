@@ -248,15 +248,3 @@ FPGA RX ─────────┘
 - [ ] M2/M4 DIR inversion flag (parameter) for mechanically inverted motor pairs
 
 ---
-
-## License
-
-MIT License — see `LICENSE` for details.
-
----
-
-## Acknowledgements
-
-Developed at **NIT Patna Mechatronics & Automation Engineering** lab as part of the ASCEND autonomous GPS-denied quadrotor project for the IRoC-U ISRO Robotics Challenge 2026.
-
-**Faculty Mentor:** Dr. Golak Bihari Mahanta, Assistant Professor, Dept. of Mechatronics & Automation Engineering, NIT Patna
